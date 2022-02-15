@@ -100,14 +100,14 @@ def download_hook(d: dict, bot_msg):
             if result is False:
                 raise ValueError(err_msg)
         eta = remove_bash_color(d.get("_eta_str", d.get("eta")))
-        text = tqdm_progress("Downloading...", total, downloaded, speed, eta)
+        text = tqdm_progress("İndiriliyor...", total, downloaded, speed, eta)
         edit_text(bot_msg, text)
         r.set(key, "ok", ex=5)
 
 
 def upload_hook(current, total, bot_msg):
     # filesize = sizeof_fmt(total)
-    text = tqdm_progress("Uploading...", total, current)
+    text = tqdm_progress("Yükleniyor...", total, current)
     edit_text(bot_msg, text)
 
 
@@ -115,9 +115,9 @@ def check_quota(file_size, chat_id) -> ("bool", "str"):
     remain, _, ttl = VIP().check_remaining_quota(chat_id)
     if file_size > remain:
         refresh_time = current_time(ttl + time.time())
-        err = f"Quota exceed, you have {sizeof_fmt(remain)} remaining, " \
-              f"but you want to download a video with {sizeof_fmt(file_size)} in size. \n" \
-              f"Try again in {ttl} seconds({refresh_time})"
+        err = f"Kota aşıldı, {sizeof_fmt(remain)} kotan kaldı" \
+              f"ama sen {sizeof_fmt(file_size)} boyutunda bir dosya indirmeye çalışıyorsun.\n" \
+              f"{ttl} saniye içinde yeniden deneyin. ({refresh_time})"
         logging.warning(err)
         Redis().update_metrics("quota_exceed")
         return False, err
