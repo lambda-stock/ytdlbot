@@ -273,7 +273,7 @@ def download_handler(client: "Client", message: "types.Message"):
     except pyrogram.errors.Flood as e:
         f = BytesIO()
         f.write(str(e).encode())
-        f.write(b"Dosyan yakında geliyor. Sadece bekle, acele etme.")
+        f.write(b"Dosyan yakinda geliyor. Sadece bekle acele etme.")
         f.name = "Please don't flood me.txt"
         bot_msg = message.reply_document(f, caption=f"Flood wait! Please wait {e.x} seconds...."
                                                     f"Your job will start automatically", quote=True)
