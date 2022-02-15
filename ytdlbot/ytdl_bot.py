@@ -202,23 +202,23 @@ def settings_handler(client: "Client", message: "types.Message"):
     data = get_user_settings(str(chat_id))
     set_mode = (data[-1])
     text = {"Local": "Celery", "Celery": "Local"}.get(set_mode, "Local")
-    mode_text = f"Download mode: **{set_mode}**"
+    mode_text = f"İndirme Modu: **{set_mode}**"
     if message.chat.username == OWNER:
-        extra = [InlineKeyboardButton(f"Change download mode to {text}", callback_data=text)]
+        extra = [InlineKeyboardButton(f"İndirme modunu {text} olarak değiştir", callback_data=text)]
     else:
         extra = []
 
     markup = InlineKeyboardMarkup(
         [
             [  # First row
-                InlineKeyboardButton("send as document", callback_data="document"),
-                InlineKeyboardButton("send as video", callback_data="video"),
-                InlineKeyboardButton("send as audio", callback_data="audio")
+                InlineKeyboardButton("Döküman olarak gönder", callback_data="document"),
+                InlineKeyboardButton("Video olarak gönder", callback_data="video"),
+                InlineKeyboardButton("Ses olarak gönder", callback_data="audio")
             ],
             [  # second row
-                InlineKeyboardButton("High Quality", callback_data="high"),
-                InlineKeyboardButton("Medium Quality", callback_data="medium"),
-                InlineKeyboardButton("Low Quality", callback_data="low"),
+                InlineKeyboardButton("Yüksek Kalite", callback_data="high"),
+                InlineKeyboardButton("Orta Kalite", callback_data="medium"),
+                InlineKeyboardButton("Düşük Kalite", callback_data="low"),
             ],
             extra
         ]
@@ -256,11 +256,11 @@ def download_handler(client: "Client", message: "types.Message"):
 
     if not re.findall(r"^https?://", url.lower()):
         red.update_metrics("bad_request")
-        message.reply_text("I think you should send me a link.", quote=True)
+        message.reply_text("Bana bir link göndermen gerektiğini düşünüyorum.", quote=True)
         return
 
     if re.findall(r"^https://www\.youtube\.com/channel/", VIP.extract_canonical_link(url)):
-        message.reply_text("Channel download is disabled now. Please send me individual video link.", quote=True)
+        message.reply_text("Kanal indirme şu an devre dışı. Lütfen bana tek video bağlantısı gönderin.", quote=True)
         red.update_metrics("reject_channel")
         return
 
@@ -273,7 +273,7 @@ def download_handler(client: "Client", message: "types.Message"):
     except pyrogram.errors.Flood as e:
         f = BytesIO()
         f.write(str(e).encode())
-        f.write(b"Your job will be done soon. Just wait! Don't rush.")
+        f.write(b"Dosyan yakında geliyor. Sadece bekle, acele etme.")
         f.name = "Please don't flood me.txt"
         bot_msg = message.reply_document(f, caption=f"Flood wait! Please wait {e.x} seconds...."
                                                     f"Your job will start automatically", quote=True)
@@ -341,11 +341,6 @@ if __name__ == '__main__':
     scheduler.add_job(periodic_sub_check, 'interval', seconds=60 * 30)
     scheduler.start()
     banner = f"""
-▌ ▌         ▀▛▘     ▌       ▛▀▖              ▜            ▌
-▝▞  ▞▀▖ ▌ ▌  ▌  ▌ ▌ ▛▀▖ ▞▀▖ ▌ ▌ ▞▀▖ ▌  ▌ ▛▀▖ ▐  ▞▀▖ ▝▀▖ ▞▀▌
- ▌  ▌ ▌ ▌ ▌  ▌  ▌ ▌ ▌ ▌ ▛▀  ▌ ▌ ▌ ▌ ▐▐▐  ▌ ▌ ▐  ▌ ▌ ▞▀▌ ▌ ▌
- ▘  ▝▀  ▝▀▘  ▘  ▝▀▘ ▀▀  ▝▀▘ ▀▀  ▝▀   ▘▘  ▘ ▘  ▘ ▝▀  ▝▀▘ ▝▀▘
-
 By @BennyThink, VIP mode: {ENABLE_VIP}, Distribution: {ENABLE_CELERY}
 Version: {get_revision()}
     """
